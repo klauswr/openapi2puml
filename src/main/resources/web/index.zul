@@ -1,10 +1,24 @@
-<window title="Demo" width="800px" height="800px" border="normal"
-	viewModel="@id('vm') @init('demo.MainViewModel')">
-	<button label="Upload OpenApi Definition" upload="true"
-		onUpload="@command('onUpload')" />
+<window title="OpenApi to platUML" width="100%" height="100%"
+	border="normal"
+	viewModel="@id('vm') @init('org.openapi2puml.MainViewModel')">
+	<borderlayout height="100%" width="100%">
+		<center autoscroll="true">
+			<vlayout>
+				<button label="Upload OpenApi Definition" upload="true"
+					onUpload="@command('onUpload')" />
 
-	<groupbox title="class diagram">
-		<image content="@load(vm.imageContent)"/>
-	</groupbox>
+				<groupbox title="class diagram">
+					<image content="@load(vm.svgContent)" />
+				</groupbox>
+			</vlayout>
+		</center>
+		<south>
+			<toolbar>
+				<toolbarbutton label="download plantUML" onClick="@command('download',type='puml')"/>
+				<toolbarbutton label="download png" onClick="@command('download',type='png')"/>
+				<toolbarbutton label="download svg" onClick="@command('download',type='svg')"/>
+			</toolbar>
+		</south>
+	</borderlayout>
 
 </window>

@@ -1,2 +1,6 @@
+server:  port: 7000
+
 zk:
    homepage: index
+   
+

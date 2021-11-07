@@ -1,0 +1,10 @@
+<window title="Demo" width="800px" height="800px" border="normal"
+	viewModel="@id('vm') @init('org.openapi2puml.MainViewModel')">
+	<button label="Upload OpenApi Definition" upload="true"
+		onUpload="@command('onUpload')" />
+
+	<groupbox title="class diagram">
+		<image content="@load(vm.imageContent)"/>
+	</groupbox>
+
+</window>
