@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.apache.commons.io.IOUtils;
 import org.openapi2puml.openapi.OpenApi2PlantUML;
@@ -105,7 +106,8 @@ public class MainViewModel {
 	@Command("download")
 	public void download(@BindingParam("type") String type) throws FileNotFoundException {
 		Path tempDir = sessionData.getTempDir();
-		Filedownload.save(tempDir.toString() + "/swagger." + type, null);
+		Path file = Paths.get(tempDir.toString(), "swagger."+ type);
+		Filedownload.save(file.toFile(), null);
 	}
 
 	@Command("refresh")
