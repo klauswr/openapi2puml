@@ -248,6 +248,7 @@ definitions:
     description: ItuCarrier
     required:
       - id
+      - clearingPlatform
     properties:
       id:
         type: string
@@ -257,11 +258,9 @@ definitions:
         description: Hyperlink to access the ItuCarrier
       tradingName:
         type: string
-        description: Name that the ITU Carrier (unit) trades under
-        
-      ClearingPlatform:
+        description: Name that the ITU Carrier (unit) trades under 
+      clearingPlatform:
         $ref: '#/definitions/ClearingPlatform'
-
       '@baseType':
         type: string
         description: When sub-classing, this defines the super-class

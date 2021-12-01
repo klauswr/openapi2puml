@@ -26,7 +26,7 @@ public class TestGenerator {
 
 	@Test
 	public void testGenerateItuCarrier4Platform() throws IllegalAccessException, IOException {
-		generate("src/test/resources/ItuCarrier4Platform2.yaml");
+		generate("src/test/resources/ItuCarrier4Platform.yaml");
 	}
 	
 	private void generate(String specFile) throws IllegalAccessException, IOException {

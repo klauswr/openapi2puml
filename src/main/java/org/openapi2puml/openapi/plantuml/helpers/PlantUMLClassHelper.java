@@ -31,6 +31,7 @@ public class PlantUMLClassHelper {
 	private boolean includeCardinality;
 
 	private static final String CARDINALITY_NONE_TO_ONE = "0..1";
+	private static final String CARDINALITY_ONE_TO_ONE = "1..1";
 	private static final String CARDINALITY_ONE_TO_MANY = "1..*";
 	private static final String CARDINALITY_NONE_TO_MANY = "0..*";
 
@@ -325,7 +326,7 @@ public class PlantUMLClassHelper {
 		return classMemberObject;
 	}
 
-	private ClassMembers getClassMember(RefProperty refProperty,  Model modelObject, Map<String, Model> models,
+	private ClassMembers getClassMember(RefProperty refProperty, Model modelObject, Map<String, Model> models,
 			String variableName, boolean fromArray) {
 
 		ClassMembers classMemberObject = new ClassMembers();
@@ -338,7 +339,8 @@ public class PlantUMLClassHelper {
 
 		if (includeCardinality && StringUtils.isNotEmpty(variableName) && modelObject != null) {
 			if (!fromArray) {
-				classMemberObject.setCardinality(CARDINALITY_NONE_TO_ONE);
+				classMemberObject.setCardinality(isRequiredProperty(modelObject, variableName) ? CARDINALITY_ONE_TO_ONE
+						: CARDINALITY_NONE_TO_ONE);
 			} else {
 				classMemberObject.setCardinality(isRequiredProperty(modelObject, variableName) ? CARDINALITY_ONE_TO_MANY
 						: CARDINALITY_NONE_TO_MANY);
