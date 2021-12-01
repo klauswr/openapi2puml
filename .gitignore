@@ -44,3 +44,4 @@ buildNumber.properties
 .settings/
 
 TechnicalNotes.md
+tmp/

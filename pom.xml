@@ -22,6 +22,8 @@
 		<version.swagger-parser>1.0.33</version.swagger-parser>
 		<version.mustache>0.8.18</version.mustache>
 		<version.net.sourceforge.plantuml>1.2019.7</version.net.sourceforge.plantuml>
+		<junit-jupiter.version>5.5.2</junit-jupiter.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
 	<repositories>
@@ -106,6 +108,14 @@
 			<artifactId>plantuml</artifactId>
 			<version>${version.net.sourceforge.plantuml}</version>
 		</dependency>
+		<!-- test -->
+		<!-- junit 5 -->
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<version>${junit-jupiter.version}</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -113,6 +123,11 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.0.0-M3</version>
 			</plugin>
 		</plugins>
 	</build>
