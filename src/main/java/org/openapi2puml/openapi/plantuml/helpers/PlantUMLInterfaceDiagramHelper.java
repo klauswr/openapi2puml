@@ -1,8 +1,14 @@
 package org.openapi2puml.openapi.plantuml.helpers;
 
-import io.swagger.models.*;
-import io.swagger.models.parameters.*;
-import io.swagger.models.properties.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -11,28 +17,45 @@ import org.openapi2puml.openapi.plantuml.vo.ClassRelation;
 import org.openapi2puml.openapi.plantuml.vo.InterfaceDiagram;
 import org.openapi2puml.openapi.plantuml.vo.MethodDefinitions;
 
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import io.swagger.models.ArrayModel;
+import io.swagger.models.Model;
+import io.swagger.v3.oas.models.Operation;
+import io.swagger.models.RefModel;
+import io.swagger.models.Response;
+import io.swagger.models.parameters.BodyParameter;
+import io.swagger.models.parameters.FormParameter;
+import io.swagger.v3.oas.models.parameters.Parameter;
+import io.swagger.models.parameters.PathParameter;
+import io.swagger.models.parameters.QueryParameter;
+import io.swagger.models.properties.ArrayProperty;
+import io.swagger.models.properties.ObjectProperty;
+import io.swagger.models.properties.Property;
+import io.swagger.models.properties.RefProperty;
+import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.PathItem;
+import io.swagger.v3.oas.models.Paths;
+import io.swagger.v3.oas.models.responses.ApiResponse;
 
 public class PlantUMLInterfaceDiagramHelper {
 	private static final Logger logger = LogManager.getLogger(PlantUMLInterfaceDiagramHelper.class);
 
 	private static final String SUFFIX_API = "Api";
 
-	public List<InterfaceDiagram> processSwaggerPaths(Swagger swagger) {
+	public List<InterfaceDiagram> processSwaggerPaths(OpenAPI swagger) {
 		Map<String, InterfaceDiagram> interfaceDiagramMap = new HashMap<>();
-		Map<String, Path> paths = swagger.getPaths();
+//		Map<String, Path> paths = swagger.getPaths();
+		Paths paths = swagger.getPaths();
 
 		logger.debug("Swagger Paths to Process to PlantUML Interfaces: " + paths.keySet()
 				.toString());
 
-		for (Map.Entry<String, Path> entry : paths.entrySet()) {
-			Path pathObject = entry.getValue();
+		for (Entry<String, PathItem> entry : paths.entrySet()) {
+		    PathItem pathObject = entry.getValue();
 
 			logger.debug("Processing Path: " + entry.getKey());
 
-			List<Operation> operations = pathObject.getOperations();
+			List<Operation> operations = pathObject.readOperations();
 			String uri = entry.getKey();
 
 			for (Operation operation : operations) {
@@ -109,7 +132,7 @@ public class PlantUMLInterfaceDiagramHelper {
 
 	private List<String> getErrorClassNames(Operation operation) {
 		List<String> errorClasses = new ArrayList<>();
-		Map<String, Response> responses = operation.getResponses();
+		Map<String, ApiResponse> responses = operation.getResponses();
 
 		for (Map.Entry<String, Response> responsesEntry : responses.entrySet()) {
 			String responseCode = responsesEntry.getKey();

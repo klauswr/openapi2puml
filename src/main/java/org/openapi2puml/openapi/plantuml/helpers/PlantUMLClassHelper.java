@@ -23,6 +23,7 @@ import io.swagger.models.properties.ArrayProperty;
 import io.swagger.models.properties.Property;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.OpenAPI;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -39,7 +40,7 @@ public class PlantUMLClassHelper {
 		this.includeCardinality = includeCardinality;
 	}
 
-	public List<ClassDiagram> processSwaggerModels(Swagger swagger) {
+	public List<ClassDiagram> processSwaggerModels(OpenAPI swagger) {
 
 		List<ClassDiagram> classDiagrams = new ArrayList<>();
 		Map<String, Model> modelsMap = swagger.getDefinitions();

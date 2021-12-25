@@ -14,6 +14,7 @@ import org.openapi2puml.openapi.plantuml.vo.ClassDiagram;
 import org.openapi2puml.openapi.plantuml.vo.InterfaceDiagram;
 
 import io.swagger.models.Swagger;
+import io.swagger.v3.oas.models.OpenAPI;
 
 public class PlantUMLCodegen {
 
@@ -25,10 +26,10 @@ public class PlantUMLCodegen {
 
   private boolean generateDefinitionModelOnly;
   private boolean includeCardinality;
-  private Swagger swagger;
+  private OpenAPI swagger;
   private File targetLocation;
 
-  public PlantUMLCodegen(Swagger swagger, File targetLocation, boolean generateDefinitionModelOnly,
+  public PlantUMLCodegen(OpenAPI swagger, File targetLocation, boolean generateDefinitionModelOnly,
                          boolean includeCardinality) {
     this.swagger = swagger;
     this.targetLocation = targetLocation;
@@ -43,7 +44,7 @@ public class PlantUMLCodegen {
    * @throws IOException            - If there is an error writing the file
    * @throws IllegalAccessException - if there is an issue generating the file information
    */
-  public String generatePlantUmlFile(Swagger swagger) throws IOException, IllegalAccessException {
+  public String generatePlantUmlFile(OpenAPI swagger) throws IOException, IllegalAccessException {
     Map<String, Object> plantUmlObjectModelMap = convertSwaggerToPlantUmlObjectModelMap(swagger);
 
     MustacheUtility mustacheUtility = new MustacheUtility();
@@ -52,7 +53,7 @@ public class PlantUMLCodegen {
     return plantUmlFilePath;
   }
 
-  public Map<String, Object> convertSwaggerToPlantUmlObjectModelMap(Swagger swagger) {
+  public Map<String, Object> convertSwaggerToPlantUmlObjectModelMap(OpenAPI swagger) {
     Map<String, Object> additionalProperties = new TreeMap<>();
 
     additionalProperties.put(TITLE, swagger.getInfo().getTitle());

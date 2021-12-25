@@ -14,6 +14,10 @@ import io.swagger.models.Model;
 import io.swagger.models.Path;
 import io.swagger.models.Swagger;
 import io.swagger.parser.SwaggerParser;
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.Paths;
+import io.swagger.v3.parser.OpenAPIV3Parser;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -34,9 +38,9 @@ public class TestGenerator {
 		File swaggerSpecFile = new File(specFile);
 		Assert.isTrue(swaggerSpecFile.exists() && !swaggerSpecFile.isDirectory() && swaggerSpecFile.canRead(),
 				"File " + swaggerSpecFile + " is invalid");
-		Swagger swaggerObject = new SwaggerParser().read(swaggerSpecFile.getAbsolutePath());
-		Map<String, Path> paths = swaggerObject.getPaths();
-		Map<String, Model> definitions = swaggerObject.getDefinitions();
+		OpenAPI swaggerObject = new OpenAPIV3Parser().read(swaggerSpecFile.getAbsolutePath());
+		Paths paths = swaggerObject.getPaths();
+		Components definitions = swaggerObject.getComponents();
 		log.info("Swagger processing done");
 		
 		File targetLocation = new File("tmp");

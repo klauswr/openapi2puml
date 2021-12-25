@@ -2,6 +2,8 @@ package org.openapi2puml.openapi.plantuml;
 
 import io.swagger.models.Swagger;
 import io.swagger.parser.SwaggerParser;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.parser.OpenAPIV3Parser;
 import net.sourceforge.plantuml.FileFormat;
 import net.sourceforge.plantuml.FileFormatOption;
 import net.sourceforge.plantuml.SourceFileReader;
@@ -39,7 +41,7 @@ public class PlantUMLGenerator {
     }
 
       LOGGER.info("Processing Swagger Spec File: " + specFile);
-      Swagger swaggerObject = new SwaggerParser().read(swaggerSpecFile.getAbsolutePath());
+      OpenAPI swaggerObject = new OpenAPIV3Parser().read(swaggerSpecFile.getAbsolutePath());
       try {
         PlantUMLCodegen codegen = new PlantUMLCodegen(swaggerObject, targetLocation, generateDefinitionModelOnly,
             includeCardinality);
