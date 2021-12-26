@@ -2,18 +2,11 @@ package org.openapi2puml.test;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
-
-import javax.validation.constraints.AssertTrue;
 
 import org.junit.jupiter.api.Test;
 import org.openapi2puml.openapi.plantuml.PlantUMLCodegen;
 import org.springframework.util.Assert;
 
-import io.swagger.models.Model;
-import io.swagger.models.Path;
-import io.swagger.models.Swagger;
-import io.swagger.parser.SwaggerParser;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Paths;
@@ -51,7 +44,7 @@ public class TestGenerator {
         PlantUMLCodegen codegen = new PlantUMLCodegen(swaggerObject, targetLocation, generateDefinitionModelOnly,
                 includeCardinality);
         String pumlPath = codegen.generatePlantUmlFile(swaggerObject);
-        log.info("Successfully Created Plant UML output file!");
+        log.info("Successfully Created Plant UML output file {}", pumlPath);
 	}
 	
 	
