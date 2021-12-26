@@ -14,21 +14,10 @@ import org.openapi2puml.openapi.plantuml.vo.ClassDiagram;
 import org.openapi2puml.openapi.plantuml.vo.ClassMembers;
 import org.openapi2puml.openapi.plantuml.vo.ClassRelation;
 
-import io.swagger.models.ArrayModel;
-import io.swagger.models.ComposedModel;
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.RefModel;
-import io.swagger.models.Swagger;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.Property;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.media.ArraySchema;
 import io.swagger.v3.oas.models.media.ComposedSchema;
 import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.Components;
-import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.media.StringSchema;
 import lombok.extern.log4j.Log4j2;
@@ -52,13 +41,13 @@ public class PlantUMLClassHelper {
         List<ClassDiagram> classDiagrams = new ArrayList<>();
         Map<String, Schema> schemaMap = swagger.getComponents().getSchemas();
 
-        log.debug("Swagger Models to Process to PlantUML Classes: " + schemaMap.keySet().toString());
+        log.debug("Swagger Schemas to Process to PlantUML Classes: " + schemaMap.keySet().toString());
 
         for (Entry<String, Schema> models : schemaMap.entrySet()) {
             String className = models.getKey();
             Schema modelObject = models.getValue();
 
-            log.debug("Processing Model: " + className);
+            log.debug("Processing Schema: " + className);
 
             String superClass = getSuperClass(modelObject);
             List<ClassMembers> classMembers = getClassMembers(modelObject, schemaMap);
@@ -86,15 +75,17 @@ public class PlantUMLClassHelper {
 
     private String getSuperClass(Schema schemaObject) {
         String superClass = null;
+        
+        ;
 
         if (schemaObject instanceof ArraySchema) {
             ArraySchema arraySchema = (ArraySchema) schemaObject;
             Schema<?> items = arraySchema.getItems();
 
-            if (items instanceof Schema) {
+            if (null == schemaObject.getType()) {
                 superClass = "ArrayList[" + ((Schema) items).get$ref() + "]";
             }
-        } else if (schemaObject instanceof Schema) {
+        } else if (null == schemaObject.getType()) {
             Object addProperty = ((Schema) schemaObject).getAdditionalProperties();
 
             if (addProperty instanceof Schema) {
@@ -135,7 +126,7 @@ public class PlantUMLClassHelper {
         return childClasses;
     }
 
-    private List<ClassMembers> getClassMembers(Schema<?> schemaObject, Map<String, Schema<?>> modelsMap) {
+    private List<ClassMembers> getClassMembers(Schema schemaObject, Map<String, Schema> modelsMap) {
         List<ClassMembers> classMembers = new ArrayList<>();
 
         if (schemaObject instanceof ObjectSchema) {
@@ -149,20 +140,20 @@ public class PlantUMLClassHelper {
         return classMembers;
     }
 
-    private List<ClassMembers> getClassMembers(ArraySchema arrayModel, Map<String, Model> modelsMap) {
+    private List<ClassMembers> getClassMembers(ArraySchema arrayModel, Map<String, Schema> modelsMap) {
 
         List<ClassMembers> classMembers = new ArrayList<>();
 
         Schema<?> propertyObject = arrayModel.getItems();
 
-        if (propertyObject instanceof RefProperty) {
-            classMembers.add(getRefClassMembers((RefProperty) propertyObject));
+        if (propertyObject instanceof Schema) {
+            classMembers.add(getRefClassMembers((Schema) propertyObject));
         }
 
         return classMembers;
     }
 
-    private List<ClassMembers> getClassMembers(ComposedSchema composedModel, Map<String, Model> modelsMap) {
+    private List<ClassMembers> getClassMembers(ComposedSchema composedModel, Map<String, Schema> modelsMap) {
         return getClassMembers(composedModel, modelsMap, new HashSet<>());
     }
 
@@ -175,8 +166,8 @@ public class PlantUMLClassHelper {
      * @param visited
      * @return
      */
-    private List<ClassMembers> getClassMembers(ComposedSchema composedModel, Map<String, Model> modelsMap,
-            Set<Model> visited) {
+    private List<ClassMembers> getClassMembers(ComposedSchema composedModel, Map<String, Schema> modelsMap,
+            Set<Schema> visited) {
         List<ClassMembers> classMembers = new ArrayList<>();
         Map<String, Schema> childProperties = new HashMap<>();
 
@@ -189,29 +180,29 @@ public class PlantUMLClassHelper {
         List<Schema> allOf = composedModel.getAllOf();
         for (Schema currentModel : allOf) {
 
-            if (currentModel instanceof RefModel) {
-                RefModel refModel = (RefModel) currentModel;
+            if (currentModel instanceof ObjectSchema) {
+                ObjectSchema refModel = (ObjectSchema) currentModel;
                 // This line throws an NPE when encountering deeply nested class hierarchies
                 // because it assumes any child
                 // classes are RefModel and not ComposedModel
                 // childProperties.putAll(modelsMap.get(refModel.getSimpleRef()).getProperties());
 
-                Model parentRefModel = modelsMap.get(refModel.getSimpleRef());
+                Schema parentRefModel = modelsMap.get(refModel.get$ref());
 
                 if (parentRefModel.getProperties() != null) {
                     childProperties.putAll(parentRefModel.getProperties());
                 }
 
                 classMembers = convertModelPropertiesToClassMembers(childProperties,
-                        modelsMap.get(refModel.getSimpleRef()), modelsMap);
+                        modelsMap.get(refModel.get$ref()), modelsMap);
 
                 // If the parent model also has AllOf references -- meaning it's a child of some
                 // other superclass
                 // then we need to recurse to get the grandparent's properties and add them to
                 // our current classes
                 // derived property list
-                if (parentRefModel instanceof ComposedModel) {
-                    ComposedModel parentRefComposedModel = (ComposedModel) parentRefModel;
+                if (parentRefModel instanceof ComposedSchema) {
+                    ComposedSchema parentRefComposedModel = (ComposedSchema) parentRefModel;
                     // Use visited to mark which classes we've processed -- this is just to avoid
                     // an infinite loop in case there's a circular reference in the class hierarchy.
                     if (!visited.contains(parentRefComposedModel)) {
@@ -226,7 +217,7 @@ public class PlantUMLClassHelper {
         return classMembers;
     }
 
-    private List<ClassMembers> getClassMembers(ObjectSchema model, Map<String, Model> modelsMap) {
+    private List<ClassMembers> getClassMembers(ObjectSchema model, Map<String, Schema> modelsMap) {
         List<ClassMembers> classMembers = new ArrayList<>();
 
         Map<String, Schema> modelMembers = model.getProperties();
@@ -235,8 +226,8 @@ public class PlantUMLClassHelper {
         } else {
             Object modelAdditionalProps = model.getAdditionalProperties();
 
-            if (modelAdditionalProps instanceof RefProperty) {
-                classMembers.add(getRefClassMembers((RefProperty) modelAdditionalProps));
+            if (modelAdditionalProps instanceof ObjectSchema) {
+                classMembers.add(getRefClassMembers((Schema) modelAdditionalProps));
             }
 
             if (modelAdditionalProps == null) {
@@ -251,9 +242,9 @@ public class PlantUMLClassHelper {
         return classMembers;
     }
 
-    private ClassMembers getRefClassMembers(RefProperty refProperty) {
+    private ClassMembers getRefClassMembers(Schema refProperty) {
         ClassMembers classMember = new ClassMembers();
-        classMember.setClassName(refProperty.getSimpleRef());
+        classMember.setClassName(refProperty.get$ref());
         classMember.setName(" ");
 
         if (includeCardinality) {
@@ -280,7 +271,7 @@ public class PlantUMLClassHelper {
     }
 
     private List<ClassMembers> convertModelPropertiesToClassMembers(Map<String, Schema> modelMembers,
-            ObjectSchema model, Map<String, Model> modelsMap) {
+            Schema schema, Map<String, Schema> schemaMap) {
 
         List<ClassMembers> classMembers = new ArrayList<>();
 
@@ -288,15 +279,15 @@ public class PlantUMLClassHelper {
             String variablName = modelMapObject.getKey();
 
             ClassMembers classMemberObject = new ClassMembers();
-            Schema property = modelMembers.get(variablName);
+            Schema aSchema = modelMembers.get(variablName);
 
-            if (property instanceof ArraySchema) {
-                classMemberObject = getClassMember((ArraySchema) property, model, modelsMap, variablName);
-            } else if (property instanceof RefProperty) {
-                classMemberObject = getClassMember((RefProperty) property, model, modelsMap, variablName, false);
+            if (aSchema instanceof ArraySchema) {
+                classMemberObject = getClassMember((ArraySchema) aSchema, schema, schemaMap, variablName);
+            } else if (null == aSchema.getType()) {
+                classMemberObject = getClassMember((Schema) aSchema, schema, schemaMap, variablName, false);
             } else {
                 classMemberObject.setDataType(
-                        getDataType(property.getFormat() != null ? property.getFormat() : property.getType(), false));
+                        getDataType(aSchema.getFormat() != null ? aSchema.getFormat() : aSchema.getType(), false));
                 classMemberObject.setName(variablName);
             }
 
@@ -306,14 +297,14 @@ public class PlantUMLClassHelper {
         return classMembers;
     }
 
-    private ClassMembers getClassMember(ArraySchema property, ObjectSchema model, Map<String, Model> models,
+    private ClassMembers getClassMember(ArraySchema property, Schema schema, Map<String, Schema> models,
             String variableName) {
 
         ClassMembers classMemberObject = new ClassMembers();
         Schema<?> propObject = property.getItems();
 
-        if (propObject instanceof RefProperty) {
-            classMemberObject = getClassMember((RefProperty) propObject, model, models, variableName, true);
+        if (null == propObject.getType()) {
+            classMemberObject = getClassMember((Schema) propObject, schema, models, variableName, true);
         } else if (propObject instanceof StringSchema) {
             classMemberObject = getClassMember((StringSchema) propObject, variableName);
         }
@@ -330,15 +321,15 @@ public class PlantUMLClassHelper {
         return classMemberObject;
     }
 
-    private ClassMembers getClassMember(RefProperty refProperty, Model modelObject, Map<String, Model> models,
+    private ClassMembers getClassMember(Schema refProperty, Schema modelObject, Map<String, Schema> models,
             String variableName, boolean fromArray) {
 
         ClassMembers classMemberObject = new ClassMembers();
-        classMemberObject.setDataType(getDataType(refProperty.getSimpleRef(), fromArray));
+        classMemberObject.setDataType(getDataType(refProperty.get$ref(), fromArray));
         classMemberObject.setName(variableName);
 
-        if (models.containsKey(refProperty.getSimpleRef())) {
-            classMemberObject.setClassName(refProperty.getSimpleRef());
+        if (models.containsKey(refProperty.get$ref())) {
+            classMemberObject.setClassName(refProperty.get$ref());
         }
 
         if (includeCardinality && StringUtils.isNotEmpty(variableName) && modelObject != null) {
@@ -353,12 +344,12 @@ public class PlantUMLClassHelper {
         return classMemberObject;
     }
 
-    private boolean isRequiredProperty(Model modelObject, String propertyName) {
+    private boolean isRequiredProperty(Schema modelObject, String propertyName) {
         boolean isRequiredProperty = false;
 
         if (modelObject != null) {
-            if (modelObject instanceof ModelImpl) {
-                List<String> requiredProperties = ((ModelImpl) modelObject).getRequired();
+            if (modelObject instanceof Schema) {
+                List<String> requiredProperties = ((Schema) modelObject).getRequired();
                 if (requiredProperties != null && !requiredProperties.isEmpty()) {
                     isRequiredProperty = requiredProperties.contains(propertyName);
                 }
