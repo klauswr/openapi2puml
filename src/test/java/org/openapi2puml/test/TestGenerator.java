@@ -40,7 +40,7 @@ public class TestGenerator {
 		log.info("Swagger processing done");
 		
 		File targetLocation = new File("tmp");
-		boolean generateDefinitionModelOnly = true;
+		boolean generateDefinitionModelOnly = false;
 		boolean includeCardinality = true;
 		Assert.isTrue(targetLocation.exists() && targetLocation.isDirectory() && targetLocation.canRead(),
 				"target location " + swaggerSpecFile + " is invalid");

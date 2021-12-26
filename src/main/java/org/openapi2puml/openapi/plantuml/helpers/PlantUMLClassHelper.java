@@ -14,6 +14,7 @@ import org.openapi2puml.openapi.plantuml.vo.ClassDiagram;
 import org.openapi2puml.openapi.plantuml.vo.ClassMembers;
 import org.openapi2puml.openapi.plantuml.vo.ClassRelation;
 
+import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.media.ArraySchema;
 import io.swagger.v3.oas.models.media.ComposedSchema;
@@ -321,15 +322,16 @@ public class PlantUMLClassHelper {
         return classMemberObject;
     }
 
-    private ClassMembers getClassMember(Schema refProperty, Schema modelObject, Map<String, Schema> models,
+    private ClassMembers getClassMember(Schema refProperty, Schema modelObject, Map<String, Schema> schemas,
             String variableName, boolean fromArray) {
 
         ClassMembers classMemberObject = new ClassMembers();
         classMemberObject.setDataType(getDataType(refProperty.get$ref(), fromArray));
         classMemberObject.setName(variableName);
 
-        if (models.containsKey(refProperty.get$ref())) {
-            classMemberObject.setClassName(refProperty.get$ref());
+        String className = StringUtils.substringAfter(refProperty.get$ref(), Components.COMPONENTS_SCHEMAS_REF);
+        if (schemas.containsKey(className)) {
+            classMemberObject.setClassName(className);
         }
 
         if (includeCardinality && StringUtils.isNotEmpty(variableName) && modelObject != null) {
