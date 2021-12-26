@@ -2,9 +2,12 @@ package org.openapi2puml.test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.openapi2puml.openapi.plantuml.PlantUMLCodegen;
+import org.openapi2puml.openapi.plantuml.helpers.PlantUMLClassHelper;
+import org.openapi2puml.openapi.plantuml.vo.ClassDiagram;
 import org.springframework.util.Assert;
 
 import io.swagger.v3.oas.models.Components;
@@ -41,7 +44,11 @@ public class TestGenerator {
 		boolean includeCardinality = true;
 		Assert.isTrue(targetLocation.exists() && targetLocation.isDirectory() && targetLocation.canRead(),
 				"target location " + swaggerSpecFile + " is invalid");
-        PlantUMLCodegen codegen = new PlantUMLCodegen(swaggerObject, targetLocation, generateDefinitionModelOnly,
+        
+		PlantUMLClassHelper plantUMLClassHelper = new PlantUMLClassHelper(true);
+		List<ClassDiagram> processSwaggerModels = plantUMLClassHelper.processSwaggerModels(swaggerObject);
+		
+		PlantUMLCodegen codegen = new PlantUMLCodegen(swaggerObject, targetLocation, generateDefinitionModelOnly,
                 includeCardinality);
         String pumlPath = codegen.generatePlantUmlFile(swaggerObject);
         log.info("Successfully Created Plant UML output file {}", pumlPath);
