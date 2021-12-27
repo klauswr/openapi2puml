@@ -149,25 +149,28 @@ public class PlantUMLInterfaceDiagramHelper {
         RequestBody requestBody = operation.getRequestBody();
         if (null != requestBody) {
 
-            Schema bodyParameter = requestBody.getContent().get(APPLICATION_JSON).getSchema();
-            if (bodyParameter instanceof ObjectSchema) {
+            MediaType mediaType = requestBody.getContent().get(APPLICATION_JSON);
+            if (null != mediaType) {
+                Schema bodyParameter = mediaType.getSchema();
+                if (bodyParameter instanceof ObjectSchema) {
 
-                ClassRelation classRelation = new ClassRelation();
-                classRelation.setTargetClass(getSimpleRef(((ObjectSchema) bodyParameter).get$ref()));
-                classRelation.setComposition(false);
-                classRelation.setExtension(true);
-
-                relatedResponses.add(classRelation);
-            } else if (bodyParameter instanceof ArraySchema) {
-                Schema propertyObject = ((ArraySchema) bodyParameter).getItems();
-
-                if (propertyObject instanceof ObjectSchema) {
                     ClassRelation classRelation = new ClassRelation();
-                    classRelation.setTargetClass(getSimpleRef(((ObjectSchema) propertyObject).get$ref()));
+                    classRelation.setTargetClass(getSimpleRef(((ObjectSchema) bodyParameter).get$ref()));
                     classRelation.setComposition(false);
                     classRelation.setExtension(true);
 
                     relatedResponses.add(classRelation);
+                } else if (bodyParameter instanceof ArraySchema) {
+                    Schema propertyObject = ((ArraySchema) bodyParameter).getItems();
+
+                    if (propertyObject instanceof ObjectSchema) {
+                        ClassRelation classRelation = new ClassRelation();
+                        classRelation.setTargetClass(getSimpleRef(((ObjectSchema) propertyObject).get$ref()));
+                        classRelation.setComposition(false);
+                        classRelation.setExtension(true);
+
+                        relatedResponses.add(classRelation);
+                    }
                 }
             }
         }
@@ -228,17 +231,20 @@ public class PlantUMLInterfaceDiagramHelper {
 
         RequestBody requestBody = operation.getRequestBody();
         if (null != requestBody) {
-            Schema bodyParameter = requestBody.getContent().get(APPLICATION_JSON).getSchema();
-            if (bodyParameter instanceof ObjectSchema) {
-                methodParameter += FormatUtility.toTitleCase(getSimpleRef(((ObjectSchema) bodyParameter).get$ref()))
-                        + ((ObjectSchema) bodyParameter).getName();
-            } else if (bodyParameter instanceof ArraySchema) {
-                Schema propertyObject = ((ArraySchema) bodyParameter).getItems();
-
-                if (propertyObject instanceof ObjectSchema) {
-                    methodParameter += FormatUtility
-                            .toTitleCase(getSimpleRef(((ObjectSchema) propertyObject).get$ref())) + "[] "
+            MediaType mediaType = requestBody.getContent().get(APPLICATION_JSON);
+            if (null != mediaType) {
+                Schema bodyParameter = mediaType.getSchema();
+                if (bodyParameter instanceof ObjectSchema) {
+                    methodParameter += FormatUtility.toTitleCase(getSimpleRef(((ObjectSchema) bodyParameter).get$ref()))
                             + ((ObjectSchema) bodyParameter).getName();
+                } else if (bodyParameter instanceof ArraySchema) {
+                    Schema propertyObject = ((ArraySchema) bodyParameter).getItems();
+
+                    if (propertyObject instanceof ObjectSchema) {
+                        methodParameter += FormatUtility
+                                .toTitleCase(getSimpleRef(((ObjectSchema) propertyObject).get$ref())) + "[] "
+                                + ((ObjectSchema) bodyParameter).getName();
+                    }
                 }
             }
         }
@@ -263,9 +269,9 @@ public class PlantUMLInterfaceDiagramHelper {
                         methodParameter += FormatUtility.toTitleCase(queryParameterProperty.getType()) + "[] "
                                 + parameter.getName();
                     } else {
-                        methodParameter += FormatUtility
-                                .toTitleCase(((QueryParameter) parameter).getContent().keySet().toString() + " "
-                                        + ((QueryParameter) parameter).getName());
+                        methodParameter += FormatUtility.toTitleCase(
+                                // todo ((QueryParameter) parameter).getContent().keySet().toString() + " " +
+                                ((QueryParameter) parameter).getName());
                     }
                 }
 // TODO		} else if (parameter instanceof FormParameter) {
