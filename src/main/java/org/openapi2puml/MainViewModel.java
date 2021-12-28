@@ -30,6 +30,7 @@ import lombok.extern.log4j.Log4j2;
 public class MainViewModel {
 
 	private SessionData sessionData;
+	private boolean generateDefinitionModelOnly = true;
 
 	@Init
 	public void init() {
@@ -96,7 +97,7 @@ public class MainViewModel {
 			sessionData.setTempDir(tempDir);
 			log.info("Target directory is [{}]", tempDir.toString());
 
-			OpenApi2PlantUML.process(tempFile.toString(), tempDir.toString(), false, true, true, true);
+			OpenApi2PlantUML.process(tempFile.toString(), tempDir.toString(), generateDefinitionModelOnly, true, true, true);
 
 //			 Messagebox.show("File Sucessfully processed. See "+ tempDir.toString());
 

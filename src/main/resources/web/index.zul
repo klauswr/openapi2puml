@@ -6,7 +6,7 @@
 			<vlayout>
 				<button label="Upload OpenApi Definition" upload="true"
 					onUpload="@command('onUpload')" />
-
+				<checkbox label="generate only model" checked="@bind(vm.generateDefinitionModelOnly)"></checkbox>	
 				<groupbox title="class diagram">
 					<image content="@load(vm.svgContent)" />
 				</groupbox>
