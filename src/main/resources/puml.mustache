@@ -2,14 +2,10 @@
 hide empty members
 set namespaceSeparator none
 
-{{#classDiagrams}}
-{{#isClass}}class{{/isClass}} {{^isClass}}enum{{/isClass}} "{{className}}" {{#superClass}} < ? extends "{{superClass}}"> {{/superClass}}{
-	 {{#fields}}
-	 - {{#name}}{{name}}{{/name}} {{#dataType}}<b>:{{dataType}}</b>{{/dataType}}
-	 {{/fields}}
-}
-
-{{/classDiagrams}}
+note as N1
+  Name: <b><color:royalBlue>{{title}}</color>
+  Version: <b><color:royalBlue>{{version}}</color>
+end note
 
 {{#interfaceDiagrams}}
 interface "{{interfaceName}}" {
@@ -20,14 +16,18 @@ interface "{{interfaceName}}" {
 
 {{/interfaceDiagrams}}
 
+{{#classDiagrams}}
+{{#isClass}}class{{/isClass}} {{^isClass}}enum{{/isClass}} "{{className}}" {{#superClass}} < ? extends "{{superClass}}"> {{/superClass}}{
+	 {{#fields}}
+	 - {{#name}}{{name}}{{/name}} {{#dataType}}<b>:{{dataType}}</b>{{/dataType}}
+	 {{/fields}}
+}
+
+{{/classDiagrams}}
+
 {{#entityRelations}}
 "{{&sourceClass}}" {{#isExtension}}-->{{/isExtension}} {{#isComposition}}*--{{/isComposition}} {{#cardinality}}"{{cardinality}}"{{/cardinality}}  "{{&targetClass}}"
 {{/entityRelations}}
-
-note as N1
-  Name: <b><color:royalBlue>{{title}}</color>
-  Version: <b><color:royalBlue>{{version}}</color>
-end note
 
 
 @enduml

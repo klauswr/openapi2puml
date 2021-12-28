@@ -84,13 +84,13 @@ public class PlantUMLClassHelper {
             Schema<?> items = arraySchema.getItems();
 
             if (null == schemaObject.getType()) {
-                superClass = "ArrayList[" + ((Schema) items).get$ref() + "]";
+                superClass = "ArrayList[" + getSimpleRef(((Schema) items).get$ref()) + "]";
             }
         } else if (null == schemaObject.getType()) {
             Object addProperty = ((Schema) schemaObject).getAdditionalProperties();
 
             if (addProperty instanceof Schema) {
-                superClass = "Map[" + ((Schema) addProperty).get$ref() + "]";
+                superClass = "Map[" + getSimpleRef(((Schema) addProperty).get$ref()) + "]";
             }
         }
 
@@ -188,14 +188,14 @@ public class PlantUMLClassHelper {
                 // classes are RefModel and not ComposedModel
                 // childProperties.putAll(modelsMap.get(refModel.getSimpleRef()).getProperties());
 
-                Schema parentRefModel = modelsMap.get(refModel.get$ref());
+                Schema parentRefModel = modelsMap.get(getSimpleRef(refModel.get$ref()));
 
                 if (parentRefModel.getProperties() != null) {
                     childProperties.putAll(parentRefModel.getProperties());
                 }
 
                 classMembers = convertModelPropertiesToClassMembers(childProperties,
-                        modelsMap.get(refModel.get$ref()), modelsMap);
+                        modelsMap.get(getSimpleRef(refModel.get$ref())), modelsMap);
 
                 // If the parent model also has AllOf references -- meaning it's a child of some
                 // other superclass
@@ -245,7 +245,7 @@ public class PlantUMLClassHelper {
 
     private ClassMembers getRefClassMembers(Schema refProperty) {
         ClassMembers classMember = new ClassMembers();
-        classMember.setClassName(refProperty.get$ref());
+        classMember.setClassName(getSimpleRef(refProperty.get$ref()));
         classMember.setName(" ");
 
         if (includeCardinality) {
@@ -326,10 +326,10 @@ public class PlantUMLClassHelper {
             String variableName, boolean fromArray) {
 
         ClassMembers classMemberObject = new ClassMembers();
-        classMemberObject.setDataType(getDataType(refProperty.get$ref(), fromArray));
+        classMemberObject.setDataType(getDataType(getSimpleRef(refProperty.get$ref()), fromArray));
         classMemberObject.setName(variableName);
 
-        String className = StringUtils.substringAfter(refProperty.get$ref(), Components.COMPONENTS_SCHEMAS_REF);
+        String className = getSimpleRef(refProperty.get$ref());
         if (schemas.containsKey(className)) {
             classMemberObject.setClassName(className);
         }
@@ -367,6 +367,11 @@ public class PlantUMLClassHelper {
         }
 
         return FormatUtility.toTitleCase(className);
+    }
+
+    
+    private String getSimpleRef(String fullRef) {
+        return StringUtils.substringAfter(fullRef, Components.COMPONENTS_SCHEMAS_REF);
     }
 
 }
