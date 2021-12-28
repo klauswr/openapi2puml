@@ -186,31 +186,31 @@ public class PlantUMLInterfaceDiagramHelper {
             String responseCode = responsesEntry.getKey();
 
             if (!(responseCode.equalsIgnoreCase("default") || Integer.parseInt(responseCode) >= 300)) {
-                Schema responseProperty = responsesEntry.getValue().getContent().get(APPLICATION_JSON).getSchema();
-
-                if (responseProperty instanceof ObjectSchema) {
-                    ClassRelation relation = new ClassRelation();
-                    relation.setTargetClass(getSimpleRef(((ObjectSchema) responseProperty).get$ref()));
-                    relation.setComposition(false);
-                    relation.setExtension(true);
-
-                    relatedResponses.add(relation);
-                } else if (responseProperty instanceof ArraySchema) {
-                    ArraySchema arrayObject = (ArraySchema) responseProperty;
-                    Schema arrayResponseProperty = arrayObject.getItems();
-
-                    if (arrayResponseProperty instanceof ObjectSchema) {
+                MediaType mediaType = responsesEntry.getValue().getContent().get(APPLICATION_JSON);
+                if (null != mediaType) {
+                    Schema responseProperty = mediaType.getSchema();
+                    if (responseProperty instanceof ObjectSchema) {
                         ClassRelation relation = new ClassRelation();
-                        relation.setTargetClass(getSimpleRef(((ObjectSchema) arrayResponseProperty).get$ref()));
+                        relation.setTargetClass(getSimpleRef(((ObjectSchema) responseProperty).get$ref()));
                         relation.setComposition(false);
                         relation.setExtension(true);
+
                         relatedResponses.add(relation);
+                    } else if (responseProperty instanceof ArraySchema) {
+                        ArraySchema arrayObject = (ArraySchema) responseProperty;
+                        Schema arrayResponseProperty = arrayObject.getItems();
+
+                        if (arrayResponseProperty instanceof ObjectSchema) {
+                            ClassRelation relation = new ClassRelation();
+                            relation.setTargetClass(getSimpleRef(((ObjectSchema) arrayResponseProperty).get$ref()));
+                            relation.setComposition(false);
+                            relation.setExtension(true);
+                            relatedResponses.add(relation);
+                        }
                     }
                 }
             }
-
         }
-
         return relatedResponses;
     }
 
@@ -290,26 +290,23 @@ public class PlantUMLInterfaceDiagramHelper {
             String responseCode = responsesEntry.getKey();
 
             if (!(responseCode.equalsIgnoreCase("default") || Integer.parseInt(responseCode) >= 300)) {
-                Schema responseProperty = responsesEntry.getValue().getContent().get(APPLICATION_JSON).getSchema();
-
-                if (responseProperty instanceof ObjectSchema) {
-                    returnType = getSimpleRef(((ObjectSchema) responseProperty).get$ref());
-                } else if (responseProperty instanceof ArraySchema) {
-                    Schema arrayResponseProperty = ((ArraySchema) responseProperty).getItems();
-                    if (arrayResponseProperty instanceof ObjectSchema) {
-                        returnType = getSimpleRef(((ObjectSchema) arrayResponseProperty).get$ref()) + "[]";
+                MediaType mediaType = responsesEntry.getValue().getContent().get(APPLICATION_JSON);
+                if (null != mediaType) {
+                    Schema responseProperty = mediaType.getSchema();
+                    if (responseProperty instanceof ObjectSchema) {
+                        returnType = getSimpleRef(((ObjectSchema) responseProperty).get$ref());
+                    } else if (responseProperty instanceof ArraySchema) {
+                        Schema arrayResponseProperty = ((ArraySchema) responseProperty).getItems();
+                        if (arrayResponseProperty instanceof ObjectSchema) {
+                            returnType = getSimpleRef(((ObjectSchema) arrayResponseProperty).get$ref()) + "[]";
+                        }
+                    } else if (responseProperty instanceof ObjectSchema) {
+                        returnType = FormatUtility.toTitleCase(operation.getOperationId()) + "Generated";
                     }
-                } else if (responseProperty instanceof ObjectSchema) {
-                    returnType = FormatUtility.toTitleCase(operation.getOperationId()) + "Generated";
                 }
             }
         }
-
         return returnType;
-    }
-
-    private String getSimpleRef(String fullRef) {
-        return StringUtils.substringAfter(fullRef, Components.COMPONENTS_SCHEMAS_REF);
     }
 
     private List<ClassRelation> getInterfaceRelations(Operation operation, List<String> errorClassNames) {
@@ -370,4 +367,8 @@ public class PlantUMLInterfaceDiagramHelper {
         return false;
     }
 
+    
+    private String getSimpleRef(String fullRef) {
+        return StringUtils.substringAfter(fullRef, Components.COMPONENTS_SCHEMAS_REF);
+    }
 }
