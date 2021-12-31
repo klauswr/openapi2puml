@@ -48,7 +48,7 @@ public class TestGenerator {
 		PlantUMLClassHelper plantUMLClassHelper = new PlantUMLClassHelper(true);
 		List<ClassDiagram> processSwaggerModels = plantUMLClassHelper.processSwaggerModels(swaggerObject);
 		
-		PlantUMLCodegen codegen = new PlantUMLCodegen(swaggerObject, targetLocation, generateDefinitionModelOnly,
+		PlantUMLCodegen codegen = new PlantUMLCodegen(swaggerObject, "swagger", targetLocation, generateDefinitionModelOnly,
                 includeCardinality);
         String pumlPath = codegen.generatePlantUmlFile(swaggerObject);
         log.info("Successfully Created Plant UML output file {}", pumlPath);

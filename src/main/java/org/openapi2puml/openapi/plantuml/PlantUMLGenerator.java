@@ -18,7 +18,7 @@ public class PlantUMLGenerator {
     super();
   }
 
-  public void transformOpenApi2Puml(String specFile, String output, boolean generateDefinitionModelOnly,
+  public void transformOpenApi2Puml(String fileName, String specFile, String output, boolean generateDefinitionModelOnly,
                                     boolean includeCardinality, boolean generateSvg, boolean generatePng) {
     File swaggerSpecFile = new File(specFile);
     File targetLocation = new File(output);
@@ -43,7 +43,7 @@ public class PlantUMLGenerator {
       LOGGER.info("Processing Swagger Spec File: " + specFile);
       OpenAPI swaggerObject = new OpenAPIV3Parser().read(swaggerSpecFile.getAbsolutePath());
       try {
-        PlantUMLCodegen codegen = new PlantUMLCodegen(swaggerObject, targetLocation, generateDefinitionModelOnly,
+        PlantUMLCodegen codegen = new PlantUMLCodegen(swaggerObject, fileName, targetLocation, generateDefinitionModelOnly,
             includeCardinality);
         String pumlPath = codegen.generatePlantUmlFile(swaggerObject);
         LOGGER.info("Successfully Created Plant UML output file!");

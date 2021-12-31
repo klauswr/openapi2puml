@@ -11,9 +11,9 @@ public class OpenApi2PlantUML {
 	 * @param generateSvg
 	 * @param generatePng
 	 */
-  public static void process(String specFile, String output, boolean generateDefinitionModelOnly, boolean includeCardinality,
+  public static void process(String fileName, String specFile, String output, boolean generateDefinitionModelOnly, boolean includeCardinality,
                        boolean generateSvg, boolean generatePng) {
     PlantUMLGenerator generator = new PlantUMLGenerator();
-    generator.transformOpenApi2Puml(specFile, output, generateDefinitionModelOnly, includeCardinality, generateSvg, generatePng);
+    generator.transformOpenApi2Puml(fileName, specFile, output, generateDefinitionModelOnly, includeCardinality, generateSvg, generatePng);
   }
 }

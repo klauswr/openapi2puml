@@ -13,10 +13,10 @@ public class MustacheUtility {
   private static final Logger LOGGER = LogManager.getLogger(MustacheUtility.class);
   private static final String MUSTACHE_TEMPLATE_FILE = "puml.mustache";
 
-  public String createPlantUmlFile(File targetLocation, Map<String, Object> additionalProperties)
+  public String createPlantUmlFile(String fileName, File targetLocation, Map<String, Object> additionalProperties)
       throws IOException, IllegalAccessException {
     String plantUmlFilePath = targetLocation.getAbsolutePath() +
-        ( targetLocation.isFile() ? "" : File.separator + "swagger.puml");
+        ( targetLocation.isFile() ? "" : File.separator + fileName + ".puml");
 
     Writer writer = null;
     try {

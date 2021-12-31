@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.openapi2puml.openapi.OpenApi2PlantUML;
 import org.zkoss.bind.BindContext;
 import org.zkoss.bind.annotation.BindingParam;
@@ -48,7 +49,7 @@ public class MainViewModel {
 
 		if (null != sessionData && null != sessionData.getTempDir()) {
 			aImage = new AImage(sessionData.getTempDir()
-					.toString() + "/swagger.png");
+					.toString() + "/" + sessionData.getFilename() + ".png");
 		}
 		return aImage;
 	}
@@ -58,7 +59,7 @@ public class MainViewModel {
 
 		if (null != sessionData && null != sessionData.getTempDir()) {
 			aImage = new AImage(sessionData.getTempDir()
-					.toString() + "/swagger.png");
+					.toString() + "/" + sessionData.getFilename() + ".png");
 		}
 		return aImage;
 	}
@@ -68,7 +69,7 @@ public class MainViewModel {
 
 		if (null != sessionData && null != sessionData.getTempDir()) {
 			aImage = new AImage(sessionData.getTempDir()
-					.toString() + "/swagger.svg");
+					.toString() + "/" + sessionData.getFilename() +".svg");
 		}
 		return aImage;
 	}
@@ -85,6 +86,7 @@ public class MainViewModel {
 		if (upEvent != null) {
 			Media media = upEvent.getMedia();
 			log.info("File Sucessfully uploaded [{}]", media.getName());
+			sessionData.setFilename(StringUtils.substringBeforeLast(media.getName(), "."));
 
 			Path tempFile = Files.createTempFile("openapi2puml", ".json");
 			InputStream in = media.getStreamData();
@@ -97,7 +99,7 @@ public class MainViewModel {
 			sessionData.setTempDir(tempDir);
 			log.info("Target directory is [{}]", tempDir.toString());
 
-			OpenApi2PlantUML.process(tempFile.toString(), tempDir.toString(), generateDefinitionModelOnly, true, true, true);
+			OpenApi2PlantUML.process(sessionData.getFilename(), tempFile.toString(), tempDir.toString(), generateDefinitionModelOnly, true, true, true);
 
 //			 Messagebox.show("File Sucessfully processed. See "+ tempDir.toString());
 
@@ -107,7 +109,8 @@ public class MainViewModel {
 	@Command("download")
 	public void download(@BindingParam("type") String type) throws FileNotFoundException {
 		Path tempDir = sessionData.getTempDir();
-		Path file = Paths.get(tempDir.toString(), "swagger."+ type);
+		String fileName = sessionData.getFilename();
+		Path file = Paths.get(tempDir.toString(), fileName + "."+ type);
 		Filedownload.save(file.toFile(), null);
 	}
 

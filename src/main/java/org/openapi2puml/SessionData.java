@@ -7,5 +7,6 @@ import lombok.Data;
 @Data
 public class SessionData {
 	private Path tempDir;
+	private String filename;
 
 }

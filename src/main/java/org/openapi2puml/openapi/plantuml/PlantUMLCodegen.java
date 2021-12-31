@@ -28,11 +28,13 @@ public class PlantUMLCodegen {
   private boolean includeCardinality;
   private OpenAPI swagger;
   private File targetLocation;
+  private String fileName;
 
-  public PlantUMLCodegen(OpenAPI swagger, File targetLocation, boolean generateDefinitionModelOnly,
+  public PlantUMLCodegen(OpenAPI swagger, String fileName, File targetLocation, boolean generateDefinitionModelOnly,
                          boolean includeCardinality) {
     this.swagger = swagger;
     this.targetLocation = targetLocation;
+    this.fileName = fileName;
     this.generateDefinitionModelOnly = generateDefinitionModelOnly;
     this.includeCardinality = includeCardinality;
   }
@@ -48,7 +50,7 @@ public class PlantUMLCodegen {
     Map<String, Object> plantUmlObjectModelMap = convertSwaggerToPlantUmlObjectModelMap(swagger);
 
     MustacheUtility mustacheUtility = new MustacheUtility();
-    String plantUmlFilePath = mustacheUtility.createPlantUmlFile(targetLocation, plantUmlObjectModelMap);
+    String plantUmlFilePath = mustacheUtility.createPlantUmlFile(fileName, targetLocation, plantUmlObjectModelMap);
 
     return plantUmlFilePath;
   }
