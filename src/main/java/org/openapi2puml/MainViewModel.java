@@ -76,7 +76,7 @@ public class MainViewModel {
 
 	@Command("onUpload")
 	@NotifyChange("*")
-	public void onUploadF(BindContext ctx) throws IOException {
+	public void onUpload(BindContext ctx) throws IOException {
 
 		UploadEvent upEvent = null;
 		Object objUploadEvent = ctx.getTriggerEvent();
