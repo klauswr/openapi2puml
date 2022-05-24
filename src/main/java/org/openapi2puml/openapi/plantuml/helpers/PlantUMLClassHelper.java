@@ -190,7 +190,7 @@ public class PlantUMLClassHelper {
 
                 Schema parentRefModel = modelsMap.get(getSimpleRef(refModel.get$ref()));
 
-                if (parentRefModel.getProperties() != null) {
+                if (parentRefModel != null && parentRefModel.getProperties() != null) {
                     childProperties.putAll(parentRefModel.getProperties());
                 }
 
