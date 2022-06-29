@@ -1,4 +1,12 @@
 
+#Build and push klauswr/openapi2puml:latest
+```
+mvn package
+docker build -t klauswr/openapi2puml:latest .
+docker push klauswr/openapi2puml:latest
+```
+
+
 # OpenAPI2Puml
 
 [![Build Status](https://api.travis-ci.com/openapi2puml/openapi2puml.svg?branch=master)](https://travis-ci.com/openapi2puml/openapi2puml)
@@ -104,7 +112,7 @@ java -cp /workspace/openapi2puml/openapi2puml-core/target/dependency/*:/workspac
 License
 ----
 
-Apacahe 2.0
+Apache 2.0
 
 [Plant UML]: <https://github.com/plantuml/plantuml>
 [Swagger]: <https://swagger.io/>

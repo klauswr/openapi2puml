@@ -100,7 +100,7 @@
 		<dependency>
 			<groupId>net.sourceforge.plantuml</groupId>
 			<artifactId>plantuml</artifactId>
-			<version>1.2019.7</version>
+			<version>1.2022.5</version>
 		</dependency>
 		<!-- test -->
 		<!-- junit 5 -->
