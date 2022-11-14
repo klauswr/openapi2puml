@@ -1,17 +1,9 @@
 
 # OpenAPI2Puml
 
-[![Build Status](https://api.travis-ci.com/openapi2puml/openapi2puml.svg?branch=master)](https://travis-ci.com/openapi2puml/openapi2puml)
-[![codecov](https://codecov.io/gh/openapi2puml/openapi2puml/branch/master/graph/badge.svg)](https://codecov.io/gh/openapi2puml/openapi2puml)
-[![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/openapi2puml/openapi2puml)
-
 OpenApi to Plant UML conversion tool generates UML Class Diagrams from an Open API definition.
 
 This is a fork of the original project Swagger2puml (https://github.com/kicksolutions/swagger2puml) which seems to have been dormant for some time.
-
-The original developers of Swagger2puml are:
-- Santosh Manapragada https://github.com/msantosh1188
-- Manisha Bardiya https://github.com/manishabardiya
 
 This project is based on Maven.
 Following are modules we currently have
@@ -69,45 +61,5 @@ and add command line options by using `docker run`, e.g.
 
 ```bash
 # Run a docker container
-$ sudo docker run --rm -it --name openapi2puml \
-    -v $PWD/examples:/specs \
-    openapi2puml/openapi2puml -i /specs/swagger.yaml -o /specs
+$ sudo docker run -d -p 7000:7000 --name openapi2puml klauswr/openapi2puml:latest
 ```
-
-A dockerhub repo exists here: https://hub.docker.com/r/openapi2puml/openapi2puml
-
-To build and run a local copy, do the following:
-
-```bash
-# Obtain base image for build
-$ sudo docker pull maven:3-jdk-11  # needed since docker-hub pull restrictions
-
-# Build the image from the project
-$ sudo docker build -t openapi2puml .
-
-# Run a docker container
-$ sudo docker run --rm -it --name openapi2puml \
-    -v $PWD/examples:/specs \
-    openapi2puml -i /specs/swagger.yaml -o /specs
-```
-
-## Running in GitPod
-
-You can directly run this code in GitPod by clicking [this link](https://gitpod.io/#https://github.com/openapi2puml/openapi2puml) and Running
-
-and then using this command line:
-
-```bash
-java -cp /workspace/openapi2puml/openapi2puml-core/target/dependency/*:/workspace/openapi2puml/openapi2puml-core/target/openapi-plantuml-core-0.0.1-SNAPSHOT.jar org.openapi2puml.openapi.OpenApi2PlantUML -i /workspace/openapi2puml/examples/swagger.yaml -o /workspace/openapi2puml/examples
-```
-
-License
-----
-
-Apacahe 2.0
-
-[Plant UML]: <https://github.com/plantuml/plantuml>
-[Swagger]: <https://swagger.io/>
-[Swagger Parser]: <https://github.com/swagger-api/swagger-parser>
-[Graphviz]: <https://graphviz.gitlab.io/>
-[Mustache]: <https://github.com/spullara/mustache.java>
