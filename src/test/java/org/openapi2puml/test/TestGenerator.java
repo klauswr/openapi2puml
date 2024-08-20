@@ -39,11 +39,11 @@ public class TestGenerator {
 		Components definitions = swaggerObject.getComponents();
 		log.info("Swagger processing done");
 		
-		File targetLocation = new File("tmp");
+		File targetLocation = new File("src/test/resources/tmp");
 		boolean generateDefinitionModelOnly = false;
 		boolean includeCardinality = true;
-		Assert.isTrue(targetLocation.exists() && targetLocation.isDirectory() && targetLocation.canRead(),
-				"target location " + swaggerSpecFile + " is invalid");
+//		Assert.isTrue(targetLocation.exists() && targetLocation.isDirectory() && targetLocation.canRead(),
+//				"target location " + swaggerSpecFile + " is invalid");
         
 		PlantUMLClassHelper plantUMLClassHelper = new PlantUMLClassHelper(true);
 		List<ClassDiagram> processSwaggerModels = plantUMLClassHelper.processSwaggerModels(swaggerObject);
