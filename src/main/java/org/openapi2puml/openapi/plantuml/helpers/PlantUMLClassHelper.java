@@ -326,7 +326,8 @@ public class PlantUMLClassHelper {
             String variableName, boolean fromArray) {
 
         ClassMembers classMemberObject = new ClassMembers();
-        classMemberObject.setDataType(getDataType(getSimpleRef(refProperty.get$ref()), fromArray));
+        String dataType = getDataType(getSimpleRef(refProperty.get$ref()), fromArray);
+        classMemberObject.setDataType(dataType);
         classMemberObject.setName(variableName);
 
         String className = getSimpleRef(refProperty.get$ref());
@@ -362,6 +363,9 @@ public class PlantUMLClassHelper {
     }
 
     private String getDataType(String className, boolean isArray) {
+        if (className == null) {
+            return "Object *";
+        }
         if (isArray) {
             return FormatUtility.toTitleCase(className) + "[]";
         }
