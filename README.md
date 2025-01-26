@@ -4,9 +4,11 @@
 mvn package
 docker build -t klauswr/openapi2puml:latest .
 docker push klauswr/openapi2puml:latest
-```
-docker run -e JAVA_TOOL_OPTIONS='-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8000' -p 7000:7000 -p 7001:8000 --name openapi2puml klauswr/openapi2puml:latest
 
+docker run -d -p 7000:7000 --name openapi2puml klauswr/openapi2puml:latest
+
+docker run -d -e JAVA_TOOL_OPTIONS='-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8000' -p 7000:7000 -p 7001:8000 --name openapi2puml klauswr/openapi2puml:latest
+```
 
 # OpenAPI2Puml
 
